@@ -1,11 +1,9 @@
 
 import './App.css';
 import Past from './pages/Past';
-import AppNavigation from './components/AppNavigation/AppNavigation';
 import {
   BrowserRouter as Router,
   Route,
-  Navigate,
   Routes,
   Link
 } from 'react-router-dom';
@@ -21,9 +19,6 @@ function App() {
     <Router>
     <div>
       <h1 style={{textAlign:'center'}}><SportsScoreIcon style={{fontSize : '30'}}/>Renn-Statistik <SportsScoreIcon style={{fontSize : '30'}}/></h1>
-
-      {/* A <Switch> looks through its children <Route>s and
-          renders the first one that matches the current URL. */}
       <Routes>
         <Route path="/" element={<Welcome/>}/>
         <Route path="Past" element={<Past/>}/>

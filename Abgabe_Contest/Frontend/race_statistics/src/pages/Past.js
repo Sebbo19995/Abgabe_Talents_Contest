@@ -1,10 +1,9 @@
 
 import axios from 'axios';
 import { React, useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AppNavigation from '../components/AppNavigation/AppNavigation';
 import GenericDataGrid from '../components/DataGrid/GenericDataGrid';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button'
 import Piechart from '../components/DataVisualization/piechart';
@@ -12,6 +11,8 @@ import Card from '@mui/material/Card';
 import GenericChart from '../components/DataChart/GenericChart';
 
 const Past = () => {
+
+    /* Set all needed State Hooks */
     let [driverData, setDriverData] = useState([]);
     const [currentDriver, setCurrentDriver] = useState('');
     const [dataLoaded, setDataLoaded] = useState(false);
@@ -25,11 +26,13 @@ const Past = () => {
     const [favoriteTracks, setFavoriteTracks] = useState([])
     const [money,setMoney] = useState([])
 
+    /* Set column Data for Tables */
     const columnsDriverData = [{field:'id', headerName:'ID'},{field:'driver', headerName:'Driver'}];
     const columnsMatchups = [{field: 'id', headerName:'Id'},{field:'Herausforderung_Datum', headerName:'Herausforderung_Datum', width: 200},{field:'Herausforderung_gefahren', headerName:'Herausforderung_gefahren',width: 200,}, {field:'Herausforderer', headerName:'Herausforderer', width: 150,},{field:'Gegner',headerName: 'Gegner'},{field:'Geldeinsatz', headerName:'Geldeinsatz', width: 150,},{field:'Gewinner',headerName:'Gewinner'}]
     const columnsNemesis = [{field: 'id', headerName:'Id'},{field:'Herausforderer', headerName:'Herausforderer', width: 150},{field:'Gegner',headerName: 'Gegner'}, {field:'Rennen_gegeneinander',headerName: 'Rennen_Gegeneinander', width: 200}]
     const columnsFavoriteTracks = [{field: 'id', headername:'Id'}, {field:'Strecke', headername:'Strecke'},{field:'Auf_Strecke_gefahren',headername:'Auf_Strecke_gefahren', width: 200}]
     
+    /* Handle Button Clicks */
     const handleSubmit = () => {
         setDriverInfoTogle(!driverInfoTogle);
         setErrorFlag(false)
@@ -40,10 +43,13 @@ const Past = () => {
     const handleDriverChange = (event) => {
             setCurrentDriver(event.target.value);
     }
+
+    /* Retrieve Data from Backend Server */
+
     const handleClick = async() =>{
         try{
             const resultWins = await axios.post('http://127.0.0.1:5000/getDriverWins',{id:currentDriver})
-            if (resultWins.data[0] == 0 & resultWins.data[1] == 0){
+            if (resultWins.data[0] === 0 & resultWins.data[1] === 0){
                 setErrorFlag(true)
                 setGridTogle(false)
             }
@@ -130,15 +136,10 @@ const Past = () => {
                 </Card>
                 <Button style = {{backgroundColor:'grey'}}><Link to="/HallOfFame" style={{textDecoration :'None', color:'black'}}>Hall Of Fame</Link></Button>
                 
-                
-                
                 </div>
-                
                 
                 }
             </div>
-
-            
         )
 }
 export default Past

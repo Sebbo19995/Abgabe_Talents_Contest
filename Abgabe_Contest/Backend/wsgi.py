@@ -5,10 +5,24 @@ from flask_cors import CORS, cross_origin
 from flask import request
 import json
 
+'''
+__________________________________________
+Server Setup and Data loading
+__________________________________________
+
+'''
+
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 data = pd.read_csv('forecast_data.csv', sep=',')
+
+'''
+__________________________________________
+Get List of Available Driver Numbers
+__________________________________________
+
+'''
 
 @app.route('/getDriverIds', methods=['GET'])
 @cross_origin()
@@ -22,6 +36,12 @@ def getDriverIds():
         return_json.append({'id':i, 'driver':i})
     return json.dumps(return_json)
 
+'''
+__________________________________________
+Get Number of Wins for specific Driver
+__________________________________________
+
+'''
 
 @app.route('/getDriverWins', methods=['POST'])
 @cross_origin()
@@ -32,6 +52,7 @@ def getDriverWins():
     wins = len(driver_profile.loc[(driver_profile['winner'] == driver_id)])
     defeats = len(driver_profile.loc[(driver_profile['winner'] != driver_id)])
     return json.dumps([wins,defeats])
+
 
 @app.route('/getLastMatchups', methods = ['POST'])
 @cross_origin()
@@ -44,6 +65,7 @@ def getLastMatchups():
     for index, row in driver_profile.iterrows():
         return_list.append({'id':row['id'], 'Herausforderung_Datum':row['race_created'],'Herausforderung_gefahren': row['race_driven'],'Herausforderer':row['challenger'],'Gegner':row['opponent'],'Geldeinsatz':row['money'],'Gewinner':row['winner']})
     return json.dumps(return_list)
+
 
 @app.route('/getNemesis', methods=['POST'])
 @cross_origin()
@@ -68,6 +90,13 @@ def getFavoriteTrack():
     for index, row in driver_profile.iterrows():
         return_list.append({'id':int(index), 'Strecke': int(row['track_id']), 'Auf_Strecke_gefahren':int(row['Auf_Strecke_gefahren'])})
     return json.dumps(return_list)
+
+'''
+__________________________________________
+Get Amount of Money Lost and Won
+__________________________________________
+
+'''
 
 @app.route('/getMoney', methods=['POST'])
 @cross_origin()
@@ -110,6 +139,12 @@ def getMostTracks():
         return_json.append({'sieger':int(row['track_id']), 'Wert':int(row['Strecke_befahren'])})
     return json.dumps(return_json)
 
+'''
+__________________________________________
+Get Predictions based on Driver Matchup rates and General Winrate
+__________________________________________
+
+'''
 
 @app.route('/getPrediction', methods= ['POST'])
 @cross_origin()
@@ -146,6 +181,7 @@ def getPrediction ():
             Ergebnis.append({str(driver_id1):0.5})
             Ergebnis.append({str(driver_id2):0.5})
     TeilGegner = (TeilGegner * Ergebnis[0][ str(driver_id1)])
+
     '''Berechnung der Allgemeinen Gewinnchance'''
         
     driver_profile1 = data.loc[(data['challenger'] == driver_id1) | (data['opponent'] == driver_id1)]
@@ -170,10 +206,10 @@ def getPrediction ():
         rateTotal1 = 1-(0.5 * 1.0069** (rate2*100-rate1*100))
     TeilRate = rateTotal1 * TeilRate
     TeilRate = round(TeilRate,2)
+
+    '''Berechnung des Gesamtergebnisses'''
+
     Gesamt = (TeilGegner + TeilRate)
     Gesamt = round(Gesamt, 2)
     return json.dumps([{'Name':'Fahrer','Gegen_Gegner': Ergebnis[0][str(driver_id1)], 'Value':Gesamt,'Gewinnrate1': rate1, 'color':'#90EE90'}, { 'Name':'Gegner','Value':(1-Gesamt),'Gegen_Gegner': (1-Ergebnis[0][str(driver_id1)]), 'Gewinnrate1':rate2, 'color':'#FF7F7F'},{'Fahrer':'Fahrer', 'Gewinnrate_Fahrer':rate1,'Gewinnrate_Gegner': rate2}])
-
-
-
-
+    

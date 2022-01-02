@@ -1,5 +1,5 @@
 import React from 'react';
-import {VictoryPie, VictoryLabel} from 'victory';
+import {VictoryPie} from 'victory';
 const Piechart = (props) => {	
     return(
         

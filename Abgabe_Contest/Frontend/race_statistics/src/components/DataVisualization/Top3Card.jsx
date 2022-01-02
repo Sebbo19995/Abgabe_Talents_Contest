@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import {React} from 'react';
 import Card from '@mui/material/Card';
 
 const Top3Card = (props) =>{

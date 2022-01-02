@@ -52,7 +52,7 @@ const Future = () =>{
     const handleClick = async() =>{
         try{
             const resultData = await axios.post('http://127.0.0.1:5000/getPrediction',{id1:currentDriver, id2:currentDriver2})
-            if (resultData.data[0] == 0 & resultData.data[1] == 0){
+            if (resultData.data[0] === 0 & resultData.data[1] === 0){
             }
             else{
                 setData(resultData.data)
